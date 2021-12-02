@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>ACTIVATION</title>
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<script src="https://kit.fontawesome.com/f0601b0fb2.js" crossorigin="anonymous"></script>
+<script type='module' src='https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.esm.js'></script>
+<script nomodule='' src='https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.js'></script>
+<script  src="./script.js"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body onresize="rs()" onload="rs()">
+  <header id="titlebar">
+    <div id="drag-region">
+
+      <div id="window-title">
+        <span></span>
+      </div>
+
+      <div id="window-controls">
+
+        <div onclick="min()" class="button" id="min-button">
+          <img class="icon" srcset="MIN_MAX_CLOSE/min-k-10.png 1x, MIN_MAX_CLOSE/min-k-12.png 1.25x, MIN_MAX_CLOSE/min-k-15.png 1.5x, MIN_MAX_CLOSE/min-k-15.png 1.75x, MIN_MAX_CLOSE/min-k-20.png 2x, MIN_MAX_CLOSE/min-k-20.png 2.25x, MIN_MAX_CLOSE/min-k-24.png 2.5x, MIN_MAX_CLOSE/min-k-30.png 3x, MIN_MAX_CLOSE/min-k-30.png 3.5x" draggable="false" />
+        </div>
+        <div onclick="max()" class="button" id="max-button">
+          <img class="icon" srcset="MIN_MAX_CLOSE/max-k-10.png 1x, MIN_MAX_CLOSE/max-k-12.png 1.25x, MIN_MAX_CLOSE/max-k-15.png 1.5x, MIN_MAX_CLOSE/max-k-15.png 1.75x, MIN_MAX_CLOSE/max-k-20.png 2x, MIN_MAX_CLOSE/max-k-20.png 2.25x, MIN_MAX_CLOSE/max-k-24.png 2.5x, MIN_MAX_CLOSE/max-k-30.png 3x, MIN_MAX_CLOSE/max-k-30.png 3.5x" draggable="false" />
+        </div>
+        <div onclick="umax()" class="button" id="restore-button">
+          <img class="icon" srcset="MIN_MAX_CLOSE/restore-k-10.png 1x, MIN_MAX_CLOSE/restore-k-12.png 1.25x, MIN_MAX_CLOSE/restore-k-15.png 1.5x, MIN_MAX_CLOSE/restore-k-15.png 1.75x, MIN_MAX_CLOSE/restore-k-20.png 2x, MIN_MAX_CLOSE/restore-k-20.png 2.25x, MIN_MAX_CLOSE/restore-k-24.png 2.5x, MIN_MAX_CLOSE/restore-k-30.png 3x, MIN_MAX_CLOSE/restore-k-30.png 3.5x" draggable="false" />
+        </div>
+        <div onclick="cl()" class="button" id="close-button">
+          <img class="icon" srcset="MIN_MAX_CLOSE/close-k-10.png 1x, MIN_MAX_CLOSE/close-k-12.png 1.25x, MIN_MAX_CLOSE/close-k-15.png 1.5x, MIN_MAX_CLOSE/close-k-15.png 1.75x, MIN_MAX_CLOSE/close-k-20.png 2x, MIN_MAX_CLOSE/close-k-20.png 2.25x, MIN_MAX_CLOSE/close-k-24.png 2.5x, MIN_MAX_CLOSE/close-k-30.png 3x, MIN_MAX_CLOSE/close-k-30.png 3.5x" draggable="false" />
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="components">
+      <form id="form"> 
+        <CEnter><h1 id="h1h">UPDATE_SUCCESS</h1></CEnter>
+        <div style="margin-top: 30px;" class="form">
+        <input id="first" required type="text" class="form__input" placeholder="USER_NAME">
+      </div>
+      <BR></BR>
+      <div class="form">
+        <input id="second" required type="password" class="form__input" placeholder="PASSWORD">
+      </div>
+        <div style=" display: flex;
+        justify-content: center;"><button>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          LOGIN
+        </button>
+      </form>
+      <script>
+        const form = document.getElementById("form")
+        form.addEventListener('submit', registeruser)
+      
+        async function registeruser(event){
+          event.preventDefault()
+          const first = document.getElementById("first").value
+          const second = document.getElementById("second").value
+      
+          const result = await fetch('https://login-ashar.herokuapp.com/user/login' , {
+            method: 'POST',
+            headers:{
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              first,
+              second
+            })
+          });
+  
+          const res = await result.json();
+          const statusCode = await result.status;
+          const username = await res.usermame;
+          // console.log(res)
+  
+          if(statusCode === 200){
+            if(username === first){
+              const { ipcRenderer } = require("electron");
+              ipcRenderer.send("lgdone");
+              window.location.replace("home.html");
+           }
+          }
+          else if(statusCode === 401){
+            console.log('logain failed')
+          }
+        }
+     </script>
+<!-- partial -->
+ 
+</body>
+</html>

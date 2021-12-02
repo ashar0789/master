@@ -1,0 +1,4 @@
+# dependencies
+/node_modules/electron/dist/electron.exe
+/electron-builder.yml
+/dist

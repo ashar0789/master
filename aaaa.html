@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" >
+  <head>
+    <meta charset="UTF-8">
+    <title>ACTIVATION</title>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+MIN_MAX_CLOSE" rel="stylesheet">
+  
+  <script src="https://kit.fontawesome.com/f0601b0fb2.js" crossorigin="anonymous"></script>
+  <script type='module' src='https://unpkg.com/ionMIN_MAX_CLOSE@5.0.0/dist/ionMIN_MAX_CLOSE/ionMIN_MAX_CLOSE.esm.js'></script>
+  <script nomodule='' src='https://unpkg.com/ionMIN_MAX_CLOSE@5.0.0/dist/ionMIN_MAX_CLOSE/ionMIN_MAX_CLOSE.js'></script>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+  <link rel="stylesheet" href="./style.css">
+  </head>
+  <!-- <style>
+    #notification {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 200px;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: white;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+.hidden {
+  display: none;
+}
+  </style> -->
+<body onresize="rs()" onload="rs()">
+  <header id="titlebar">
+    <div id="drag-region">
+
+      <div id="window-title">
+        <span></span>
+      </div>
+
+      <div id="window-controls">
+
+        <div onclick="min()" class="button" id="min-button">
+          <img class="icon" srcset="MIN_MAX_CLOSE/min-k-10.png 1x, MIN_MAX_CLOSE/min-k-12.png 1.25x, MIN_MAX_CLOSE/min-k-15.png 1.5x, MIN_MAX_CLOSE/min-k-15.png 1.75x, MIN_MAX_CLOSE/min-k-20.png 2x, MIN_MAX_CLOSE/min-k-20.png 2.25x, MIN_MAX_CLOSE/min-k-24.png 2.5x, MIN_MAX_CLOSE/min-k-30.png 3x, MIN_MAX_CLOSE/min-k-30.png 3.5x" draggable="false" />
+        </div>
+        <div onclick="max()" class="button" id="max-button">
+          <img class="icon" srcset="MIN_MAX_CLOSE/max-k-10.png 1x, MIN_MAX_CLOSE/max-k-12.png 1.25x, MIN_MAX_CLOSE/max-k-15.png 1.5x, MIN_MAX_CLOSE/max-k-15.png 1.75x, MIN_MAX_CLOSE/max-k-20.png 2x, MIN_MAX_CLOSE/max-k-20.png 2.25x, MIN_MAX_CLOSE/max-k-24.png 2.5x, MIN_MAX_CLOSE/max-k-30.png 3x, MIN_MAX_CLOSE/max-k-30.png 3.5x" draggable="false" />
+        </div>
+        <div onclick="umax()" class="button" id="restore-button">
+          <img class="icon" srcset="MIN_MAX_CLOSE/restore-k-10.png 1x, MIN_MAX_CLOSE/restore-k-12.png 1.25x, MIN_MAX_CLOSE/restore-k-15.png 1.5x, MIN_MAX_CLOSE/restore-k-15.png 1.75x, MIN_MAX_CLOSE/restore-k-20.png 2x, MIN_MAX_CLOSE/restore-k-20.png 2.25x, MIN_MAX_CLOSE/restore-k-24.png 2.5x, MIN_MAX_CLOSE/restore-k-30.png 3x, MIN_MAX_CLOSE/restore-k-30.png 3.5x" draggable="false" />
+        </div>
+        <div onclick="cl()" class="button" id="close-button">
+          <img class="icon" srcset="MIN_MAX_CLOSE/close-k-10.png 1x, MIN_MAX_CLOSE/close-k-12.png 1.25x, MIN_MAX_CLOSE/close-k-15.png 1.5x, MIN_MAX_CLOSE/close-k-15.png 1.75x, MIN_MAX_CLOSE/close-k-20.png 2x, MIN_MAX_CLOSE/close-k-20.png 2.25x, MIN_MAX_CLOSE/close-k-24.png 2.5x, MIN_MAX_CLOSE/close-k-30.png 3x, MIN_MAX_CLOSE/close-k-30.png 3.5x" draggable="false" />
+        </div>
+      </div>
+    </div>
+  </header>
+<div class="container">
+  <div class="components">
+    <form id="form"> 
+      <CEnter><h1 id="h1h">LOGIN_PAGE</h1></CEnter>
+      <div style="margin-top: 30px;" class="form">
+      <input id="first" required type="text" class="form__input" placeholder="USER_NAME">
+    </div>
+    <BR></BR>
+    <div class="form">
+      <input id="second" required type="password" class="form__input" placeholder="PASSWORD">
+    </div>
+      <div style=" display: flex;
+      justify-content: center;"><button type="submit">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        LOGIN
+      </button>
+    </form>
+    <div id="notification" class="hidden">
+      <p id="message"></p>
+      <button id="close-button" onClick="closeNotification()">
+        Close
+      </button>
+      <button id="restart-button" onClick="restartApp()" class="hidden">
+        Restart
+      </button>
+    </div>
+    <script>
+      const form = document.getElementById("form")
+      form.addEventListener('submit', registeruser)
+    
+      async function registeruser(event){
+        event.preventDefault()
+        const first = document.getElementById("first").value
+        const second = document.getElementById("second").value
+    
+        const result = await fetch('https://login-ashar.herokuapp.com/user/login' , {
+          method: 'POST',
+          headers:{
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            first,
+            second
+          })
+        });
+
+        const res = await result.json();
+        const statusCode = await result.status;
+        const username = await res.usermame;
+        // console.log(res)
+
+        if(statusCode === 200){
+          if(username === first){
+            const { ipcRenderer } = require("electron");
+            ipcRenderer.send("lgdone");
+            window.location.replace("home.html");
+         }
+        }
+        else if(statusCode === 401){
+          console.log('logain failed')
+        }
+      }
+
+      /*UPDATER WORK*/
+      const { ipcRenderer } = require('electron');
+      const notification = document.getElementById('notification');
+const message = document.getElementById('message');
+const restartButton = document.getElementById('restart-button');
+ipcRenderer.on('update_available', () => {
+  ipcRenderer.removeAllListeners('update_available');
+  message.innerText = 'A new update is available. Downloading now...';
+  notification.classList.remove('hidden');
+});
+ipcRenderer.on('update_downloaded', () => {
+  ipcRenderer.removeAllListeners('update_downloaded');
+  message.innerText = 'Update Downloaded. It will be installed on restart. Restart now?';
+  restartButton.classList.remove('hidden');
+  notification.classList.remove('hidden');
+});
+
+function closeNotification() {
+  notification.classList.add('hidden');
+}
+function restartApp() {
+  ipcRenderer.send('restart_app');
+}
+    </script>
+<!-- partial -->
+  <script  src="script.js"></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+</body>
+</html>
